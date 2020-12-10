@@ -1,20 +1,20 @@
-const { count } = require("../src/fizz");
-const { fizzBuzz } = require("../src/fizz");
+const fizzBuzz = (from, to) => {
+  const result = [];
 
-describe("count", () => {
-  let actual;
+  for (i = from; i <= to; i++) {
+    if (i % 15 === 0) {
+      result.push("FizzBuzz");
+    } else if (i % 3 === 0) {
+      result.push("Fizz");
+    } else if (i % 5 === 0) {
+      result.push("Buzz");
+    } else {
+      result.push(i);
+    }
+  }
 
-  beforeAll(() => {
-    actual = count(1, 100);
-  });
-
-  test("should go from 1 to 100", () => {
-    expect(Array.isArray(actual)).toBeTruthy();
-    expect(actual.length).toBe(100);
-    expect(actual[0]).toBe(1);
-    expect(actual[actual.length - 1]).toBe(100);
-  });
-});
+  return result;
+};
 
 describe("fizzbuzz", () => {
   let actual;
