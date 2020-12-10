@@ -1,4 +1,8 @@
-const { getAllEndpoint, createEndpoint } = require("../src/coaster.controller");
+const {
+  getAllEndpoint,
+  getOneEndpoint,
+  createEndpoint,
+} = require("../src/coaster.controller");
 const coastersService = require("../src/coaster.service");
 
 // MOCKS
@@ -8,6 +12,7 @@ const coasters = [
 ];
 
 coastersService.getAll = jest.fn(() => coasters);
+coastersService.getOne = jest.fn(() => console.log("Not implemented"));
 coastersService.create = jest.fn((coaster) => {
   coasters.push({
     id: coasters[coasters.length - 1].id + 1,
@@ -28,6 +33,38 @@ describe("api", () => {
       expect(coastersService.getAll).toHaveBeenCalled();
       expect(res.code).toEqual(200);
       expect(res.body).toEqual(coasters);
+    });
+  });
+
+  describe("get one endpoint", () => {
+    test("should get one coaster by id", () => {
+      const req = {
+        params: {
+          id: 1,
+        },
+      };
+      coastersService.getOne.mockImplementationOnce((id) => coasters[0]);
+
+      const res = getOneEndpoint(req);
+
+      expect(coastersService.getOne).toHaveBeenCalledWith(req.params.id);
+      expect(res.code).toEqual(200);
+      expect(res.body).toEqual(coasters[0]);
+    });
+
+    test("should not found a coaster if not exists", () => {
+      const req = {
+        params: {
+          id: 5,
+        },
+      };
+      coastersService.getOne.mockImplementationOnce((id) => {
+        throw new Error(`A coaster with id ${id} could not be found`);
+      });
+
+      expect(() => getOneEndpoint(req)).toThrow(
+        "A coaster with id 5 could not be found"
+      );
     });
   });
 
